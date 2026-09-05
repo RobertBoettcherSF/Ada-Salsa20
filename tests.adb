@@ -17,16 +17,16 @@ procedure Tests is
       end if;
    end Check;
 
-   Test_Key_32  : Key_256 := (others => 16#42#);
-   Test_Key_16  : Key_128 := (others => 16#13#);
-   Test_Nonce   : Nonce_64  := (others => 16#00#);
-   Test_Counter : Unsigned_64 := 1;
+   Test_Key_32  : constant Key_256 := [others => 16#42#];
+   Test_Key_16  : constant Key_128 := [others => 16#13#];
+   Test_Nonce   : constant Nonce_64  := [others => 16#00#];
+   Test_Counter : constant Unsigned_64 := 1;
 
 begin
    -- TEST 1 — Salsa20/256/20 Basic Symmetry
    Put_Line ("TEST 1 — Salsa20/256/20 Basic Symmetry");
    declare
-      Plain     : Byte_Array (0 .. 31) := (1, 2, 3, 4, 5, 6, 7, 8, others => 9);
+      Plain     : constant Byte_Array (0 .. 31) := [1, 2, 3, 4, 5, 6, 7, 8, others => 9];
       Cipher    : Byte_Array (0 .. 31);
       Decrypted : Byte_Array (0 .. 31);
    begin
@@ -40,7 +40,7 @@ begin
    -- TEST 2 — Salsa20/256/12 Variant
    Put_Line ("TEST 2 — Salsa20/256/12 Variant");
    declare
-      Plain     : Byte_Array (0 .. 15) := (10, 20, 30, 40, others => 50);
+      Plain     : constant Byte_Array (0 .. 15) := [10, 20, 30, 40, others => 50];
       Cipher    : Byte_Array (0 .. 15);
       Decrypted : Byte_Array (0 .. 15);
    begin
@@ -54,7 +54,7 @@ begin
    -- TEST 3 — Salsa20/256/8 Variant
    Put_Line ("TEST 3 — Salsa20/256/8 Variant");
    declare
-      Plain     : Byte_Array (0 .. 15) := (5, 4, 3, 2, 1, others => 0);
+      Plain     : constant Byte_Array (0 .. 15) := [5, 4, 3, 2, 1, others => 0];
       Cipher    : Byte_Array (0 .. 15);
       Decrypted : Byte_Array (0 .. 15);
    begin
@@ -68,7 +68,7 @@ begin
    -- TEST 4 — Salsa20/128/20 Variant
    Put_Line ("TEST 4 — Salsa20/128/20 Variant");
    declare
-      Plain     : Byte_Array (0 .. 15) := (7, 14, 21, 28, others => 35);
+      Plain     : constant Byte_Array (0 .. 15) := [7, 14, 21, 28, others => 35];
       Cipher    : Byte_Array (0 .. 15);
       Decrypted : Byte_Array (0 .. 15);
    begin
@@ -82,7 +82,7 @@ begin
    -- TEST 5 — General Round Parameterization
    Put_Line ("TEST 5 — General Round Parameterization");
    declare
-      Plain     : Byte_Array (0 .. 15) := (99, 88, 77, 66, others => 55);
+      Plain     : constant Byte_Array (0 .. 15) := [99, 88, 77, 66, others => 55];
       Cipher    : Byte_Array (0 .. 15);
       Decrypted : Byte_Array (0 .. 15);
    begin
@@ -108,7 +108,7 @@ begin
    -- TEST 7 — Empty Input Edge Case
    Put_Line ("TEST 7 — Empty Input Edge Case");
    declare
-      Plain     : Byte_Array (1 .. 0) := (others => <>);
+      Plain     : constant Byte_Array (1 .. 0) := [];
       Cipher    : Byte_Array (1 .. 0);
       Decrypted : Byte_Array (1 .. 0);
    begin
@@ -122,7 +122,7 @@ begin
    -- TEST 8 — Single-Byte Input Edge Case
    Put_Line ("TEST 8 — Single-Byte Input Edge Case");
    declare
-      Plain     : Byte_Array (0 .. 0) := (0 => 123);
+      Plain     : constant Byte_Array (0 .. 0) := [0 => 123];
       Cipher    : Byte_Array (0 .. 0);
       Decrypted : Byte_Array (0 .. 0);
    begin
@@ -153,7 +153,7 @@ begin
    -- TEST 10 — Invalid Round Count Exception Handling
    Put_Line ("TEST 10 — Invalid Round Count Exception Handling");
    declare
-      Plain  : Byte_Array (0 .. 15) := (others => 0);
+      Plain  : constant Byte_Array (0 .. 15) := [others => 0];
       Cipher : Byte_Array (0 .. 15);
       Raised : Boolean := False;
    begin
@@ -171,7 +171,7 @@ begin
    -- TEST 11 — Mismatched Data Length Exception Handling
    Put_Line ("TEST 11 — Mismatched Data Length Exception Handling");
    declare
-      Plain  : Byte_Array (0 .. 15) := (others => 0);
+      Plain  : constant Byte_Array (0 .. 15) := [others => 0];
       Cipher : Byte_Array (0 .. 10);
       Raised : Boolean := False;
    begin
@@ -189,10 +189,10 @@ begin
    -- TEST 12 — Nonce and Counter Variation (Diffusion)
    Put_Line ("TEST 12 — Nonce and Counter Variation");
    declare
-      Plain   : Byte_Array (0 .. 15) := (others => 0);
+      Plain   : constant Byte_Array (0 .. 15) := [others => 0];
       Cipher1 : Byte_Array (0 .. 15);
       Cipher2 : Byte_Array (0 .. 15);
-      Nonce2  : Nonce_64 := (0 => 1, others => 0);
+      Nonce2  : constant Nonce_64 := [0 => 1, others => 0];
    begin
       Encrypt_256_20 (Test_Key_32, Test_Nonce, Test_Counter, Plain, Cipher1);
       Encrypt_256_20 (Test_Key_32, Nonce2, Test_Counter, Plain, Cipher2);
@@ -204,8 +204,8 @@ begin
    -- TEST 13 — Zero Key and Boundary Conditions
    Put_Line ("TEST 13 — Zero Key and Boundary Conditions");
    declare
-      Zero_Key  : Key_256 := (others => 0);
-      Plain     : Byte_Array (0 .. 15) := (others => 0);
+      Zero_Key  : constant Key_256 := [others => 0];
+      Plain     : constant Byte_Array (0 .. 15) := [others => 0];
       Cipher    : Byte_Array (0 .. 15);
       Decrypted : Byte_Array (0 .. 15);
    begin
