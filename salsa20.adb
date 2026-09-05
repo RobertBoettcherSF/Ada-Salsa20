@@ -23,7 +23,7 @@ package body Salsa20 is
    end Bytes_To_Word;
 
    -- Helper: Little-endian conversion of Word to 4 bytes
-   procedure Word_To_Bytes (W : Word; B : in out Byte_Array; Offset : Natural) is
+   procedure Word_To_Bytes (W : Word; B : in out Block_Bytes; Offset : Natural) is
    begin
       B (Offset)     := Byte (W and 16#FF#);
       B (Offset + 1) := Byte (Shift_Right (W, 8) and 16#FF#);
