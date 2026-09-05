@@ -14,12 +14,14 @@ package body Salsa20 is
    Tau_3   : constant Word := 16#6b206574#; -- "te k"
 
    -- Helper: Little-endian conversion of 4 bytes to Word (32-bit unsigned)
-   function Bytes_To_Word (B : Byte_Array; Offset : Natural) return Word is
+   -- Using B'First handles Ada's array sliding preservation when slices are passed
+   function Bytes_To_Word (B : Byte_Array) return Word is
+      F : constant Natural := B'First;
    begin
-      return Word (B (Offset)) or
-            (Word (B (Offset + 1)) * 2**8) or
-            (Word (B (Offset + 2)) * 2**16) or
-            (Word (B (Offset + 3)) * 2**24);
+      return Word (B (F)) or
+            (Word (B (F + 1)) * 2**8) or
+            (Word (B (F + 2)) * 2**16) or
+            (Word (B (F + 3)) * 2**24);
    end Bytes_To_Word;
 
    -- Helper: Little-endian conversion of Word to 4 bytes
@@ -83,20 +85,20 @@ package body Salsa20 is
 
       -- Construct initial 16-word state for 256-bit key
       St (0)  := Sigma_0;
-      St (1)  := Bytes_To_Word (Byte_Array (Key (0 .. 3)), 0);
-      St (2)  := Bytes_To_Word (Byte_Array (Key (4 .. 7)), 0);
-      St (3)  := Bytes_To_Word (Byte_Array (Key (8 .. 11)), 0);
-      St (4)  := Bytes_To_Word (Byte_Array (Key (12 .. 15)), 0);
+      St (1)  := Bytes_To_Word (Byte_Array (Key (0 .. 3)));
+      St (2)  := Bytes_To_Word (Byte_Array (Key (4 .. 7)));
+      St (3)  := Bytes_To_Word (Byte_Array (Key (8 .. 11)));
+      St (4)  := Bytes_To_Word (Byte_Array (Key (12 .. 15)));
       St (5)  := Sigma_1;
-      St (6)  := Bytes_To_Word (Byte_Array (Nonce (0 .. 3)), 0);
-      St (7)  := Bytes_To_Word (Byte_Array (Nonce (4 .. 7)), 0);
+      St (6)  := Bytes_To_Word (Byte_Array (Nonce (0 .. 3)));
+      St (7)  := Bytes_To_Word (Byte_Array (Nonce (4 .. 7)));
       St (8)  := Unsigned_32 (Counter and 16#FFFFFFFF#);
       St (9)  := Unsigned_32 (Shift_Right (Counter, 32) and 16#FFFFFFFF#);
       St (10) := Sigma_2;
-      St (11) := Bytes_To_Word (Byte_Array (Key (16 .. 19)), 0);
-      St (12) := Bytes_To_Word (Byte_Array (Key (20 .. 23)), 0);
-      St (13) := Bytes_To_Word (Byte_Array (Key (24 .. 27)), 0);
-      St (14) := Bytes_To_Word (Byte_Array (Key (28 .. 31)), 0);
+      St (11) := Bytes_To_Word (Byte_Array (Key (16 .. 19)));
+      St (12) := Bytes_To_Word (Byte_Array (Key (20 .. 23)));
+      St (13) := Bytes_To_Word (Byte_Array (Key (24 .. 27)));
+      St (14) := Bytes_To_Word (Byte_Array (Key (28 .. 31)));
       St (15) := Sigma_3;
 
       Salsa20_Core (St, Out_St, Rounds);
@@ -123,20 +125,20 @@ package body Salsa20 is
 
       -- Construct initial 16-word state for 128-bit key (repeats key and uses tau constants)
       St (0)  := Tau_0;
-      St (1)  := Bytes_To_Word (Byte_Array (Key (0 .. 3)), 0);
-      St (2)  := Bytes_To_Word (Byte_Array (Key (4 .. 7)), 0);
-      St (3)  := Bytes_To_Word (Byte_Array (Key (8 .. 11)), 0);
-      St (4)  := Bytes_To_Word (Byte_Array (Key (12 .. 15)), 0);
+      St (1)  := Bytes_To_Word (Byte_Array (Key (0 .. 3)));
+      St (2)  := Bytes_To_Word (Byte_Array (Key (4 .. 7)));
+      St (3)  := Bytes_To_Word (Byte_Array (Key (8 .. 11)));
+      St (4)  := Bytes_To_Word (Byte_Array (Key (12 .. 15)));
       St (5)  := Tau_1;
-      St (6)  := Bytes_To_Word (Byte_Array (Nonce (0 .. 3)), 0);
-      St (7)  := Bytes_To_Word (Byte_Array (Nonce (4 .. 7)), 0);
+      St (6)  := Bytes_To_Word (Byte_Array (Nonce (0 .. 3)));
+      St (7)  := Bytes_To_Word (Byte_Array (Nonce (4 .. 7)));
       St (8)  := Unsigned_32 (Counter and 16#FFFFFFFF#);
       St (9)  := Unsigned_32 (Shift_Right (Counter, 32) and 16#FFFFFFFF#);
       St (10) := Tau_2;
-      St (11) := Bytes_To_Word (Byte_Array (Key (0 .. 3)), 0);
-      St (12) := Bytes_To_Word (Byte_Array (Key (4 .. 7)), 0);
-      St (13) := Bytes_To_Word (Byte_Array (Key (8 .. 11)), 0);
-      St (14) := Bytes_To_Word (Byte_Array (Key (12 .. 15)), 0);
+      St (11) := Bytes_To_Word (Byte_Array (Key (0 .. 3)));
+      St (12) := Bytes_To_Word (Byte_Array (Key (4 .. 7)));
+      St (13) := Bytes_To_Word (Byte_Array (Key (8 .. 11)));
+      St (14) := Bytes_To_Word (Byte_Array (Key (12 .. 15)));
       St (15) := Tau_3;
 
       Salsa20_Core (St, Out_St, Rounds);
