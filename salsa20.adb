@@ -48,7 +48,7 @@ package body Salsa20 is
          raise Invalid_Round_Count;
       end if;
 
-      for R range 1 .. Rounds / 2 loop
+      for R in 1 .. Rounds / 2 loop
          -- Column round
          Quarter_Round (St (0), St (4), St (8), St (12));
          Quarter_Round (St (5), St (9), St (13), St (1));
